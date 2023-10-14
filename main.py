@@ -12,7 +12,7 @@ from data_preprocessing.data_preprocess import preprocess_data
     help="Path to the data preprocessing config",
 )
 def main(config_data: Path):
-    preprocess_data(config_data)
+    df = preprocess_data(config_data)
 
 
 if __name__ == "__main__":
