@@ -1,36 +1,14 @@
-file_path: "./data_preprocessing/data/raw_data_healthcare.csv"
+# relative paths from this config
+file_path: "./data/raw_data_healthcare.csv"
+output_path: "./data/preprocessed.csv"
 
+# list of diseases that should be included, if empty all will be taken into account
 diseases:
-  - "Rheumatoid Arthritis"
   - "Crohn's Disease"
   - "Ulcerative Colitis"
-  - "Multiple Sclerosis"
-  - "Psoriasis"
-  - "Ankylosing Spondylitis"
-  - "Psoriatic Arthritis"
-  - "Hidradenitis Suppurativa"
-  - "Spondyloarthritis"
-  - "Behcet's Disease"
-  - "Non-Radiographic Axial Spondyloarthritis"
-  - "Plaque Psoriasis"
 
-treatments:
-  - "Humira"
-  - "Stelara"
-  - "Remicade"
-  - "Entyvio"
-  - "Tysabri"
-  - "Simponi"
-  - "Cimzia"
-  - "Simponi Aria"
-  - "Inflectra"
-  - "Renflexis"
+# list of treatments that should be included, if empty all will be taken into account
+treatments: 
 
+# list of antibodies that should be included, if empty all will be taken into account
 antibodies:
-  - "adalimumab"
-  - "infliximab"
-  - "ustekinumab"
-  - "golimumab"
-  - "vedolizumab"
-  - "natalizumab"
-  - "certolizumab"
