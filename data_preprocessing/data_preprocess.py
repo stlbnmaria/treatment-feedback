@@ -17,10 +17,9 @@ with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 
-def preprocess_data(file_path: str, 
-                    diseases: list = [], 
-                    antibodies: list = [],
-                    treatments: list = []) -> pd.DataFrame:
+def preprocess_data(
+    file_path: str, diseases: list = [], antibodies: list = [], treatments: list = []
+) -> pd.DataFrame:
     """
     Preprocesses the CSV file specified by extracting treatment, disease, and antibody information
     and tokenizing the comments.
@@ -35,7 +34,7 @@ def preprocess_data(file_path: str,
     - pd.DataFrame: The processed dataframe with added 'treatment', 'disease', 'antibody',
                     and 'processed_comment' columns.
     """
-    
+
     # Read the CSV file into a dataframe
     dataframe = pd.read_csv(file_path)
 
@@ -51,11 +50,11 @@ def preprocess_data(file_path: str,
     # Filter the dataframe based on the specified diseases
     if diseases:
         dataframe = dataframe[dataframe["disease"].isin(diseases)]
-        
+
     # Filter the dataframe based on the specified antibodies
     if antibodies:
         dataframe = dataframe[dataframe["antibody"].isin(antibodies)]
-        
+
     # Filter the dataframe based on the specified treatments
     if treatments:
         dataframe = dataframe[dataframe["treatment"].isin(treatments)]
@@ -67,7 +66,11 @@ def preprocess_data(file_path: str,
     dataframe["processed_comment"] = dataframe["comment"].apply(
         lambda text: [
             lemmatizer.lemmatize(token)
-            for token in word_tokenize(text.lower().strip().translate(str.maketrans('', '', string.punctuation)))
+            for token in word_tokenize(
+                text.lower()
+                .strip()
+                .translate(str.maketrans("", "", string.punctuation))
+            )
             if token not in stop_words and token.isalpha()
         ]
     )
@@ -76,10 +79,12 @@ def preprocess_data(file_path: str,
 
 
 def main():
-    df = preprocess_data(config["file_path"], 
-                         diseases=config.get("diseases", []), 
-                         antibodies=config.get("antibodies", []),
-                         treatments=config.get("treatments", []))
+    df = preprocess_data(
+        config["file_path"],
+        diseases=config.get("diseases", []),
+        antibodies=config.get("antibodies", []),
+        treatments=config.get("treatments", []),
+    )
     print(df.head())
 
 
