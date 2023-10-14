@@ -1,4 +1,3 @@
-import os
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
