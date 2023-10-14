@@ -1,3 +1,4 @@
+from ast import literal_eval
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -79,6 +80,10 @@ def extract_filter_process(
             )
             if token not in stop_words and token.isalpha()
         ]
+    )
+    # change column to list of strings instead of whole string
+    dataframe["processed_comment"] = dataframe.processed_comment.apply(
+        lambda x: literal_eval(str(x))
     )
 
     return dataframe
