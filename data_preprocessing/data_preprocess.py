@@ -1,4 +1,3 @@
-
 import os
 import nltk
 from nltk.corpus import stopwords
@@ -15,12 +14,16 @@ nltk.download("punkt")
 nltk.download("wordnet")
 
 # Read the path from the config.yaml file
-with open(os.path.join(os.getcwd(),"data_preprocessing", "config.yaml")) as f:
+with open(os.path.join(os.getcwd(), "data_preprocessing", "config.yaml")) as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 
 def preprocess_data(
-    file_path: str, diseases: list = [], antibodies: list = [], treatments: list = [], output_path: str = None
+    file_path: str,
+    diseases: list = [],
+    antibodies: list = [],
+    treatments: list = [],
+    output_path: str = None,
 ) -> pd.DataFrame:
     """
     Preprocesses the CSV file specified by extracting treatment, disease, and antibody information
@@ -31,6 +34,8 @@ def preprocess_data(
     - diseases (list): List of diseases to filter. If empty, no filtering is applied.
     - antibodies (list): List of antibodies to filter. If empty, no filtering is applied.
     - treatments (list): List of treatments to filter. If empty, no filtering is applied.
+     - output_path (str, optional): Path to save the processed dataframe as a CSV file.
+                                   If not provided, the dataframe will not be saved.
 
     Returns:
     - pd.DataFrame: The processed dataframe with added 'treatment', 'disease', 'antibody',
@@ -89,9 +94,9 @@ def main():
         diseases=config.get("diseases", []),
         antibodies=config.get("antibodies", []),
         treatments=config.get("treatments", []),
-        output_path=config.get("output_path")
+        output_path=config.get("output_path", None),
     )
-    print(df.head())
+    print("-------- Data processing done -------")
 
 
 if __name__ == "__main__":
