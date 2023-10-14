@@ -1,0 +1,36 @@
+file_path: "./data_preprocessing/data/raw_data_healthcare.csv"
+
+diseases:
+  - "Rheumatoid Arthritis"
+  - "Crohn's Disease"
+  - "Ulcerative Colitis"
+  - "Multiple Sclerosis"
+  - "Psoriasis"
+  - "Ankylosing Spondylitis"
+  - "Psoriatic Arthritis"
+  - "Hidradenitis Suppurativa"
+  - "Spondyloarthritis"
+  - "Behcet's Disease"
+  - "Non-Radiographic Axial Spondyloarthritis"
+  - "Plaque Psoriasis"
+
+treatments:
+  - "Humira"
+  - "Stelara"
+  - "Remicade"
+  - "Entyvio"
+  - "Tysabri"
+  - "Simponi"
+  - "Cimzia"
+  - "Simponi Aria"
+  - "Inflectra"
+  - "Renflexis"
+
+antibodies:
+  - "adalimumab"
+  - "infliximab"
+  - "ustekinumab"
+  - "golimumab"
+  - "vedolizumab"
+  - "natalizumab"
+  - "certolizumab"
