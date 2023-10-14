@@ -20,7 +20,7 @@ with open(os.path.join(os.getcwd(),"data_preprocessing", "config.yaml")) as f:
 
 
 def preprocess_data(
-    file_path: str, diseases: list = [], antibodies: list = [], treatments: list = []
+    file_path: str, diseases: list = [], antibodies: list = [], treatments: list = [], output_path: str = None
 ) -> pd.DataFrame:
     """
     Preprocesses the CSV file specified by extracting treatment, disease, and antibody information
@@ -77,6 +77,9 @@ def preprocess_data(
         ]
     )
 
+    if output_path:
+        dataframe.to_csv(output_path, index=False)
+
     return dataframe
 
 
@@ -86,6 +89,7 @@ def main():
         diseases=config.get("diseases", []),
         antibodies=config.get("antibodies", []),
         treatments=config.get("treatments", []),
+        output_path=config.get("output_path")
     )
     print(df.head())
 
