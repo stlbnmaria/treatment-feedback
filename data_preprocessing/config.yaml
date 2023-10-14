@@ -1,4 +1,4 @@
-file_path: "./data/raw_data_healthcare.csv"
+file_path: "./data_preprocessing/data/raw_data_healthcare.csv"
 
 diseases:
   - "Rheumatoid Arthritis"

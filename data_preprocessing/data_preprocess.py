@@ -1,3 +1,5 @@
+
+import os
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -13,7 +15,7 @@ nltk.download("punkt")
 nltk.download("wordnet")
 
 # Read the path from the config.yaml file
-with open("config.yaml") as f:
+with open(os.path.join(os.getcwd(),"data_preprocessing", "config.yaml")) as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 
