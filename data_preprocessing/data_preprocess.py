@@ -38,7 +38,7 @@ def extract_filter_process(
     # Read the CSV file into a dataframe
     dataframe = pd.read_csv(file_path)
 
-    # Extract treatment, disease, and antibody information
+    # Extract treatment, disease,treatment type and antibody information
     dataframe["treatment"] = (
         dataframe["medication"].str.extract("^(.*?)(?:\s*\(.*\)|\s*for)")[0].str.strip()
     )
@@ -46,6 +46,12 @@ def extract_filter_process(
         dataframe["medication"].str.extract("[fF]or (.*?)(?:,|$)")[0].str.strip()
     )
     dataframe["antibody"] = dataframe["medication"].str.extract("\(([^)]+)\)")
+
+    dataframe["treatment_type"] = dataframe["medication"].str.extract(
+        r"(, Maintenance|, Acute)$", expand=False
+    )
+
+    dataframe["treatment_type"] = dataframe["treatment_type"].str.replace(", ", "")
 
     # Filter the dataframe based on the specified diseases
     if diseases:
