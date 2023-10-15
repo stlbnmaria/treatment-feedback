@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
+from transformers import pipeline
 from typing import List, Tuple, Union
 
 
@@ -19,7 +20,7 @@ def preprocess_data(path: str, min_df: float, max_df: float) -> Tuple:
     - max_df (float): Maximum frequency for words to be considered.
 
     Returns:
-    - Tuple: A tuple containing the vectorized comments, the sentiments, and the original dataframe.
+    - Tuple: A tuple containing the vectorized comments, the true sentiments, and the original dataframe.
     """
     # Load data from CSV
     df = pd.read_csv(path)
@@ -33,14 +34,14 @@ def preprocess_data(path: str, min_df: float, max_df: float) -> Tuple:
     comments = df.processed_comment.map(lambda tokens: " ".join(tokens))
 
     # Assign sentiment based on rating
-    df["sentiment"] = np.where(df["rate"] > 5, 1, 0)
+    df["true_sentiment"] = np.where(df["rate"] > 5, 1, 0)
 
     # Create a TF-IDF vectorizer and transform comments
     vectorizer = TfidfVectorizer(
         min_df=min_df, max_df=max_df, analyzer="word", ngram_range=(1, 2)
     )
     X = vectorizer.fit_transform(comments)
-    y = df["sentiment"]
+    y = df["true_sentiment"]
 
     return X, y, df
 
@@ -57,7 +58,7 @@ def train_and_evaluate(
     - df (pd.DataFrame): The original dataframe.
 
     Returns:
-    - Tuple: The classification report of the model on the test set and the dataframe with predictions for the entire dataset.
+    - Tuple: The classification report of the model on the test set and the dataframe with logistic regression predictions for the entire dataset.
     """
     # Initialize the Logistic Regression classifier
     classifier = LogisticRegression(class_weight="balanced", random_state=2023)
@@ -72,7 +73,7 @@ def train_and_evaluate(
 
     # Predict sentiments for the entire dataset
     yhat = model.predict(X)
-    df["predictions"] = yhat
+    df["predicted_logreg_sentiment"] = yhat
 
     # Evaluate the model's performance on the test set
     _, X_test, _, y_test = train_test_split(
@@ -82,6 +83,36 @@ def train_and_evaluate(
     report = classification_report(y_test, y_test_pred)
 
     return report, df
+
+
+def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Perform sentiment analysis using a pretrained CSV model.
+
+    Parameters:
+    - file_path (str): The path to the CSV file.
+
+    Returns:
+    - pd.DataFrame: DataFrame containing original data with added transformer sentiment labels and scores.
+    """
+
+    # Ensure the 'comment' column exists
+    if "comment" not in df.columns:
+        raise ValueError("The CSV file must contain a 'comment' column.")
+
+    comments = df["comment"].tolist()
+
+    # Load the classification pipeline
+    classifier = pipeline("sentiment-analysis")
+
+    # Classify the comments
+    results = classifier(comments)
+
+    # Extract the labels and scores from the results
+    df["transformer_sentiment_labels"] = [entry["label"] for entry in results]
+    df["transformer_sentiment_scores"] = [entry["score"] for entry in results]
+
+    return df
 
 
 def main():
@@ -94,7 +125,7 @@ def main():
         "..",
         "data_preprocessing",
         "data",
-        "sent_analysis_logreg_preds.csv",
+        "sent_analysis.csv",
     )
 
     # Preprocess data
@@ -102,6 +133,8 @@ def main():
 
     # Train the model, predict, and evaluate
     report, df_with_predictions = train_and_evaluate(X, y, df)
+
+    df_with_predictions = sentiment_analysis_transformers(df_with_predictions)
 
     df_with_predictions.to_csv(output_path)
 
