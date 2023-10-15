@@ -81,11 +81,17 @@ def extract_filter_process(
             if token not in stop_words and token.isalpha()
         ]
     )
+<<<<<<< HEAD
     # change column to list of strings instead of whole string
     dataframe["processed_comment"] = dataframe.processed_comment.apply(
         lambda x: literal_eval(str(x))
     )
 
+=======
+    dataframe["processed_comment"] = dataframe.processed_comment.apply(lambda x: literal_eval(str(x)))
+    #dataframe["processed_comment"] = dataframe["processed_comment"].apply(literal_eval)
+    
+>>>>>>> e18300d4b985584f75dce4648fdd7a77ea2b5601
     return dataframe
 
 
