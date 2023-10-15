@@ -15,6 +15,62 @@ nltk.download("punkt")
 nltk.download("wordnet")
 
 
+def lemmatize_case(value):
+    """
+    Lemmatizes a given text string by tokenizing it, converting to lowercase,
+    removing punctuation, and lemmatizing non-stopword, alphabetical tokens.
+
+    Parameters:
+    - value (str): The input text string to be lemmatized.
+
+    Returns:
+    - list: A list of lemmatized tokens from the input text, excluding stop words and non-alphabetical tokens.
+          If the input value is None or NaN, an empty list is returned.
+    """
+
+    stop_words = set(stopwords.words("english"))
+    lemmatizer = WordNetLemmatizer()
+
+    if pd.notna(value):
+        return [
+            lemmatizer.lemmatize(token)
+            for token in word_tokenize(
+                value.lower()
+                .strip()
+                .translate(str.maketrans("", "", string.punctuation))
+            )
+            if token not in stop_words and token.isalpha()
+        ]
+    else:
+        return []
+
+
+def remove_disease_terms(row):
+    """
+    Filter out words from a processed comment that appear in the names of the treatment,
+    disease and anti-body for this disease.
+
+    Parameters:
+    - row (pandas.Series): A pandas Series containing columns.
+
+    Returns:
+    - list: A list of words from 'processed_comment' that are not found in any of the lemmatized sets
+    ('lemmatized_disease', 'lemmatized_treatment', 'lemmatized_antibody').
+    """
+    return [
+        word
+        for word in row["processed_comment"]
+        if not any(
+            word in lemmatized_set
+            for lemmatized_set in [
+                row["lemmatized_disease"],
+                row["lemmatized_treatment"],
+                row["lemmatized_antibody"],
+            ]
+        )
+    ]
+
+
 def extract_filter_process(
     file_path: Path,
     diseases: list = [],
@@ -39,7 +95,7 @@ def extract_filter_process(
     # Read the CSV file into a dataframe
     dataframe = pd.read_csv(file_path)
 
-    # Extract treatment, disease,treatment type and antibody information
+    # Extract treatment, disease, treatment type and antibody information
     dataframe["treatment"] = (
         dataframe["medication"].str.extract("^(.*?)(?:\s*\(.*\)|\s*for)")[0].str.strip()
     )
@@ -66,25 +122,14 @@ def extract_filter_process(
     if treatments:
         dataframe = dataframe[dataframe["treatment"].isin(treatments)]
 
-    stop_words = set(stopwords.words("english"))
-    lemmatizer = WordNetLemmatizer()
-
     # Convert to lowercase, tokenize, remove stopwords, and apply lemmatization
-    dataframe["processed_comment"] = dataframe["comment"].apply(
-        lambda text: [
-            lemmatizer.lemmatize(token)
-            for token in word_tokenize(
-                text.lower()
-                .strip()
-                .translate(str.maketrans("", "", string.punctuation))
-            )
-            if token not in stop_words and token.isalpha()
-        ]
-    )
-    # change column to list of strings instead of whole string
-    dataframe["processed_comment"] = dataframe.processed_comment.apply(
-        lambda x: literal_eval(str(x))
-    )
+    dataframe["processed_comment"] = dataframe["comment"].apply(lemmatize_case)
+    dataframe["lemmatized_disease"] = dataframe["disease"].apply(lemmatize_case)
+    dataframe["lemmatized_antibody"] = dataframe["antibody"].apply(lemmatize_case)
+    dataframe["lemmatized_treatment"] = dataframe["treatment"].apply(lemmatize_case)
+
+    # Remove treatment, disease and anti-body names from processed comment
+    dataframe["processed_comment"] = dataframe.apply(remove_disease_terms, axis=1)
 
     return dataframe
 
