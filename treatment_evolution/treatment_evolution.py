@@ -94,6 +94,7 @@ def main():
 
     # Load the dataframe and extract treatments
     df, treatments_to_check = load_and_extract_treatments(path)
+    df = df.dropna(subset=["treatment"])
 
     # Apply fuzzy logic
     df = apply_fuzzy_logic(df, treatments_to_check)
