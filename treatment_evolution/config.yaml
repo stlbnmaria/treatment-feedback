@@ -1,0 +1,5 @@
+fuzzy_threshold: 80
+
+# relative paths from this config
+file_path: "../data_preprocessing/data/preprocessed.csv"
+output_path: "../data_preprocessing/data/treatment_evolution.csv"
