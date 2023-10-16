@@ -5,3 +5,4 @@ nbstripout==0.6.1
 nltk==3.8.1
 pandas==2.1.1
 PyYAML==6.0.1
+rake_nltk==1.0.6

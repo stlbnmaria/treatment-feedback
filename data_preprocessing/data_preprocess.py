@@ -159,7 +159,7 @@ def preprocess_data(config_data: Path = Path("config.yaml")):
     print("-------- Data processing done -------")
 
     # set the output path of the csv
-    output_path = config.get("output_path", None)
+    output_path = config.get("preprocessing_path", None)
     if output_path:
         # save the data to csv if requested
         df.to_csv(Path(config_data.parent / output_path), index=False)
