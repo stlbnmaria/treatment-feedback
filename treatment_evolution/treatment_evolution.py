@@ -32,7 +32,7 @@ def apply_fuzzy_logic(df: pd.DataFrame, treatments_to_check: List[str]) -> pd.Da
     """
     # Threshold for fuzzy matching
     THRESHOLD = 80
-    
+
     # Helper function to find fuzzy treatments in a comment
     def find_fuzzy_treatment(comment):
         treatments_found = []
@@ -40,39 +40,49 @@ def apply_fuzzy_logic(df: pd.DataFrame, treatments_to_check: List[str]) -> pd.Da
             for word in comment.split():
                 if fuzz.ratio(treatment.lower(), word.lower()) >= THRESHOLD:
                     treatments_found.append(treatment)
-                    break  
-        return ', '.join(treatments_found) if treatments_found else None
-    
+                    break
+        return ", ".join(treatments_found) if treatments_found else None
+
     # Helper function to get the fuzzy delta treatment for a row
     def get_fuzzy_delta_treatment(row):
-        treatments_in_comment_list = row['fuzzy_treatments_in_comment'].split(", ") if row['fuzzy_treatments_in_comment'] else []
-        if row['treatment'] in treatments_in_comment_list:
-            treatments_in_comment_list.remove(row['treatment'])
-        return ', '.join(treatments_in_comment_list) if treatments_in_comment_list else None
+        treatments_in_comment_list = (
+            row["fuzzy_treatments_in_comment"].split(", ")
+            if row["fuzzy_treatments_in_comment"]
+            else []
+        )
+        if row["treatment"] in treatments_in_comment_list:
+            treatments_in_comment_list.remove(row["treatment"])
+        return (
+            ", ".join(treatments_in_comment_list)
+            if treatments_in_comment_list
+            else None
+        )
 
     # Apply the functions
-    df['fuzzy_treatments_in_comment'] = df['comment'].apply(find_fuzzy_treatment)
-    df['fuzzy_delta_treatment'] = df.apply(get_fuzzy_delta_treatment, axis=1)
+    df["fuzzy_treatments_in_comment"] = df["comment"].apply(find_fuzzy_treatment)
+    df["fuzzy_delta_treatment"] = df.apply(get_fuzzy_delta_treatment, axis=1)
 
     return df
 
+
 def quantify_treatment_change(row):
     # Check if fuzzy_delta_treatment is None/null
-    if pd.isnull(row['fuzzy_delta_treatment']):
+    if pd.isnull(row["fuzzy_delta_treatment"]):
         return None
-    
+
     # Define the rating quantification based on the given scale
-    if 1 <= row['rate'] <= 2:
+    if 1 <= row["rate"] <= 2:
         return -2
-    elif 3 <= row['rate'] <= 4:
+    elif 3 <= row["rate"] <= 4:
         return -1
-    elif row['rate'] == 5:
+    elif row["rate"] == 5:
         return 0
-    elif 6 <= row['rate'] <= 7:
+    elif 6 <= row["rate"] <= 7:
         return 1
     else:
         return 2
-    
+
+
 def main():
     # Define the path to the preprocessed data
     path = os.path.join(
@@ -87,9 +97,8 @@ def main():
 
     # Apply fuzzy logic
     df = apply_fuzzy_logic(df, treatments_to_check)
-    
-    df['fuzzy_treatment_change_score'] = df.apply(quantify_treatment_change, axis=1)
 
+    df["fuzzy_treatment_change_score"] = df.apply(quantify_treatment_change, axis=1)
 
     df.to_csv(output_path)
 
