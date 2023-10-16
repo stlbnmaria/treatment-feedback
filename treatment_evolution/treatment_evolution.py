@@ -52,11 +52,7 @@ def apply_fuzzy_logic(df: pd.DataFrame, treatments_to_check: List[str]) -> pd.Da
         )
         if row["treatment"] in treatments_in_comment_list:
             treatments_in_comment_list.remove(row["treatment"])
-        return (
-            ", ".join(treatments_in_comment_list)
-            if treatments_in_comment_list
-            else None
-        )
+        return treatments_in_comment_list
 
     # Apply the functions
     df["fuzzy_treatments_in_comment"] = df["comment"].apply(find_fuzzy_treatment)
@@ -67,7 +63,7 @@ def apply_fuzzy_logic(df: pd.DataFrame, treatments_to_check: List[str]) -> pd.Da
 
 def quantify_treatment_change(row):
     # Check if fuzzy_delta_treatment is None/null
-    if pd.isnull(row["fuzzy_delta_treatment"]):
+    if not row["fuzzy_delta_treatment"]:
         return None
 
     # Define the rating quantification based on the given scale
@@ -100,6 +96,10 @@ def main():
     df = apply_fuzzy_logic(df, treatments_to_check)
 
     df["fuzzy_treatment_change_score"] = df.apply(quantify_treatment_change, axis=1)
+
+    df = df[["text_index", "fuzzy_delta_treatment", "fuzzy_treatment_change_score"]]
+    df = df.dropna(subset=["fuzzy_treatment_change_score"])
+    df = df.explode("fuzzy_delta_treatment")
 
     df.to_csv(output_path)
 
