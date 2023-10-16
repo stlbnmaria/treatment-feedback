@@ -1,17 +1,16 @@
 from fuzzywuzzy import fuzz
-import os
 import pandas as pd
 from pathlib import Path
 from typing import List, Tuple, Union
 import yaml
 
 
-def load_and_extract_treatments(path: str) -> Tuple[pd.DataFrame, List[str]]:
+def load_and_extract_treatments(path: Path) -> Tuple[pd.DataFrame, List[str]]:
     """
     Loads the dataframe and extracts unique treatments.
 
     Parameters:
-    - path (str): Path to the preprocessed CSV file.
+    - path (Path): Path to the preprocessed CSV file.
 
     Returns:
     - Tuple: A tuple containing the loaded dataframe and the list of unique treatments.
@@ -23,7 +22,7 @@ def load_and_extract_treatments(path: str) -> Tuple[pd.DataFrame, List[str]]:
 
 def find_fuzzy_treatment(
     comment: str, treatments_to_check: List[str], fuzzy_threshold: int
-) -> str:
+) -> List[str]:
     """
     Helper function to find fuzzy treatments in a comment
 
@@ -33,7 +32,7 @@ def find_fuzzy_treatment(
     - fuzzy_threshold (int): Threshold for fuzzy words
 
     Returns:
-    - str: list of treatments in comments as string
+    - List: list of treatments in comments
     """
     treatments_found = []
     for treatment in treatments_to_check:
@@ -41,7 +40,7 @@ def find_fuzzy_treatment(
             if fuzz.ratio(treatment.lower(), word.lower()) >= fuzzy_threshold:
                 treatments_found.append(treatment)
                 break
-    return ", ".join(treatments_found) if treatments_found else None
+    return treatments_found
 
 
 def get_fuzzy_delta_treatment(row: pd.Series) -> List[str]:
@@ -54,11 +53,7 @@ def get_fuzzy_delta_treatment(row: pd.Series) -> List[str]:
     Returns:
     - List: list of treatments in comments that patient is not taking anymore
     """
-    treatments_in_comment_list = (
-        row["fuzzy_treatments_in_comment"].split(", ")
-        if row["fuzzy_treatments_in_comment"]
-        else []
-    )
+    treatments_in_comment_list = row["fuzzy_treatments_in_comment"]
     if row["treatment"] in treatments_in_comment_list:
         treatments_in_comment_list.remove(row["treatment"])
     return treatments_in_comment_list
