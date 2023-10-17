@@ -59,4 +59,6 @@ def phrase_classification(
     if file_path:
         row_df.to_csv(file_path, index=False)
 
+    print("------- Phrase Modeling Completed -------")
+
     return row_df

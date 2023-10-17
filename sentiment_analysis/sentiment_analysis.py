@@ -1,6 +1,6 @@
-import ast
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from transformers import pipeline
 
 
@@ -24,10 +24,10 @@ def topic_condition(row: pd.Series) -> str:
 
 def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Load and processes the data from Topic extraction.
+    Processes the data from Topic extraction.
 
     Parameters:
-    - path(str): Path to the data which is loaded.
+    - df(pd.DataFrame): Dataframe after phrase_modeling
     Returns:
     - pd.DataFrame: Dataframe contained transformed data.
     """
@@ -67,8 +67,18 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def sent_analysis(df, out_path):
+def sent_analysis(df: pd.DataFrame, out_path: Path) -> pd.DataFrame:
+    """
+    Performs sentiment analysis on phrase data.
+
+    Parameters:
+    - df(pd.Dataframe): Dataframe upon wihch sentiment analysis will be conducted.
+    - out_path(Path): Output path for csv after sentiment analysis.
+    Returns:
+    - pd.DataFrame: DataFrame containing original data with added transformer sentiment labels and topics.
+    """
     df = process_sent_data(df)
     df = sentiment_analysis_transformers(df)
     df.to_csv(out_path, index=False)
     print("------- Sentiment Analysis Completed -------")
+    return df

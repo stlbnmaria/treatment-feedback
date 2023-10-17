@@ -27,13 +27,14 @@ def main(config_path: Path):
         df, min_length=config["min_length"], max_length=config["max_length"]
     )
     # do phrase classification
-    df_phrase = phrase_classification(
+    df = phrase_classification(
         df,
         file_path=Path(config_path.parent / config["phrase_path"]),
         category_labels=config["topics"],
     )
-    sent_analysis(
-        df_phrase, out_path=Path(config_path.parent / config["sent_phrase_path"])
+    # do sentiment analysis on phrases
+    df = sent_analysis(
+        df, out_path=Path(config_path.parent / config["sent_phrase_path"])
     )
 
 
