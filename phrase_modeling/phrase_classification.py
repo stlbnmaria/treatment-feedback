@@ -54,6 +54,7 @@ def phrase_classification(
 
     # Creates a new DataFrame from the new rows
     row_df = pd.DataFrame(new_rows)
+    row_df.drop(columns="phrases")
     row_df.to_csv("data_preprocessing/data/row_csv.csv", index=False)
 
     return row_df
