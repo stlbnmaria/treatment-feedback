@@ -3,6 +3,8 @@ file_path: "data/raw_data_healthcare.csv"
 preprocessing_path: "data/preprocessed.csv"
 phrase_path: "data/phrase.csv"
 sent_phrase_path: "data/sent_analysis.csv"
+keywords_output_file_path: "data/data_with_keywords.csv"
+similarity_scores_path: "data/topic_similarity_scores"
 
 # list of diseases that should be included, if empty all will be taken into account
 diseases:

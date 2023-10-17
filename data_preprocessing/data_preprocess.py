@@ -1,11 +1,6 @@
-from ast import literal_eval
 import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
 from pathlib import Path
 import pandas as pd
-import string
 import yaml
 
 
@@ -22,8 +17,7 @@ def extract_filter_process(
     treatments: list = [],
 ) -> pd.DataFrame:
     """
-    Preprocesses the CSV file specified by extracting treatment, disease, and antibody information
-    and tokenizing the comments.
+    Preprocesses the CSV file specified by extracting treatment, disease, and antibody information.
 
     Parameters:
     - file_path (Path): Path to the CSV file.
@@ -39,7 +33,7 @@ def extract_filter_process(
     # Read the CSV file into a dataframe
     dataframe = pd.read_csv(file_path)
 
-    # Extract treatment, disease,treatment type and antibody information
+    # Extract treatment, disease, treatment type and antibody information
     dataframe["treatment"] = (
         dataframe["medication"].str.extract("^(.*?)(?:\s*\(.*\)|\s*for)")[0].str.strip()
     )
@@ -66,26 +60,6 @@ def extract_filter_process(
     if treatments:
         dataframe = dataframe[dataframe["treatment"].isin(treatments)]
 
-    stop_words = set(stopwords.words("english"))
-    lemmatizer = WordNetLemmatizer()
-
-    # Convert to lowercase, tokenize, remove stopwords, and apply lemmatization
-    dataframe["processed_comment"] = dataframe["comment"].apply(
-        lambda text: [
-            lemmatizer.lemmatize(token)
-            for token in word_tokenize(
-                text.lower()
-                .strip()
-                .translate(str.maketrans("", "", string.punctuation))
-            )
-            if token not in stop_words and token.isalpha()
-        ]
-    )
-    # change column to list of strings instead of whole string
-    dataframe["processed_comment"] = dataframe.processed_comment.apply(
-        lambda x: literal_eval(str(x))
-    )
-
     return dataframe
 
 
@@ -98,7 +72,7 @@ def preprocess_data(config_path: Path = Path("../config.yaml")):
 
     Returns:
     - pd.DataFrame: The processed dataframe with added 'treatment', 'disease', 'antibody',
-                    and 'processed_comment' columns.
+                    and 'treatment type' columns.
     """
 
     # read the path from the config.yaml file

@@ -17,6 +17,7 @@ To install requirements:
 
 ```bash
 pip install -r requirements.txt
+python -m spacy download en_core_web_md
 ```
 
 It is assumed that the user has the raw data stored in a folder called `data` which is located in the root.
