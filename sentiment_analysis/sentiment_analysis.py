@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from transformers import pipeline
 from typing import List, Tuple, Union
 
+
 def load_process_sent_data(path: str) -> pd.DataFrame:
     """
     Load and processes the data from Topic extraction.
@@ -21,12 +22,14 @@ def load_process_sent_data(path: str) -> pd.DataFrame:
 
     df = pd.read_csv(path)
     df["category"] = df["category"].apply(
-        lambda x: ast.literal_eval(x) if pd.notnull(x) else [])
+        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
+    )
     df["topic"] = df["category"].apply(lambda x: x[0] if len(x) > 0 else "")
     df = df.drop(["category", "score"], axis=1)
-    df = df[df['phrase'].notna()]
-    #df["phrase"] = df["phrase"].apply(lambda x : str(x))
+    df = df[df["phrase"].notna()]
+    # df["phrase"] = df["phrase"].apply(lambda x : str(x))
     return df
+
 
 def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -52,7 +55,9 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
 
     # Extract the labels and scores from the results
     df["transformer_sentiment_labels"] = [entry["label"] for entry in results]
-    df["transformer_sentiment_labels"] = np.where(df["transformer_sentiment_labels"] == "NEGATIVE", 0, 1)
+    df["transformer_sentiment_labels"] = np.where(
+        df["transformer_sentiment_labels"] == "NEGATIVE", 0, 1
+    )
     return df
 
 
@@ -75,7 +80,7 @@ def main():
     #   Use pre-trained model to predict sentiment
     df = sentiment_analysis_transformers(df)
 
-    #df_with_predictions.to_csv(output_path)
+    # df_with_predictions.to_csv(output_path)
     df.to_csv(output_path)
 
     print("------- Sentiment Analysis Completed -------")
