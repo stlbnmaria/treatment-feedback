@@ -35,5 +35,5 @@ def phrase_extraction(df: pd.DataFrame,
     # applies phrase extraction to chosen comment and creates new column "phrases"
     df["phrases"] = df[column_name_comment].apply(extract_keyphrase)
 
-    df.to_csv("data_preprocessing/data/preprocessed.csv")
+    #df.to_csv("data_preprocessing/data/preprocessed.csv")
     return df
