@@ -32,7 +32,7 @@ def main(config_path: Path):
         config = yaml.load(f, Loader=yaml.FullLoader)
     # do phase extraction
     df_phrase = phrase_extraction(
-        df_phrase, min_length=config["min_length"], max_length=config["max_length"]
+        df, min_length=config["min_length"], max_length=config["max_length"]
     )
     # do phrase classification
     df_phrase = phrase_classification(
