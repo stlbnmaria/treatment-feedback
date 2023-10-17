@@ -66,6 +66,7 @@ def remove_disease_terms(row):
                 row["lemmatized_disease"],
                 row["lemmatized_treatment"],
                 row["lemmatized_antibody"],
+                "uc",
             ]
         )
     ]
