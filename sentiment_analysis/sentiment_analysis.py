@@ -2,12 +2,7 @@ import ast
 import numpy as np
 import os
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
 from transformers import pipeline
-from typing import List, Tuple, Union
 
 
 def load_process_sent_data(path: str) -> pd.DataFrame:
