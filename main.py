@@ -32,7 +32,7 @@ def main(config_path: Path):
         file_path=Path(config_path.parent / config["phrase_path"]),
         category_labels=config["topics"],
     )
-    sent_analysis(df_phrase)
+    sent_analysis(df_phrase, out_path=Path(config_path.parent / config["sent_phrase_path"]),)
 
 
 if __name__ == "__main__":

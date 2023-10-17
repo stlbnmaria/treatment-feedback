@@ -77,15 +77,8 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def sent_analysis(df):
-    output_path = os.path.join(
-        os.getcwd(),
-        "..",
-        "data_preprocessing",
-        "data",
-        "sent_analysis.csv",
-    )
+def sent_analysis(df, out_path):
     df = process_sent_data(df)
     df = sentiment_analysis_transformers(df)
-    df.to_csv(output_path)
+    df.to_csv(out_path, index=False)
     print("------- Sentiment Analysis Completed -------")
