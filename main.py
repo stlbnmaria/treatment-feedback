@@ -32,7 +32,7 @@ def main(config_path: Path):
         file_path=Path(config_path.parent / config["phrase_path"]),
         category_labels=config["topics"],
     )
-    # do sentiment analysis on phrases
+    # do sentiment analysis on phrases
     df = sent_analysis(
         df, out_path=Path(config_path.parent / config["sent_phrase_path"])
     )
