@@ -1,13 +1,11 @@
 import ast
 import numpy as np
-import os
 import pandas as pd
 from transformers import pipeline
 
 
 def topic_condition(row: pd.Series) -> str:
     """
-
     Selects which topic to be the topic of the phrase.
 
     Parameters:
@@ -21,7 +19,7 @@ def topic_condition(row: pd.Series) -> str:
         if row["score"][0] > 0.4:
             return row["category"][0]
         else:
-            return "no topic"
+            return None
 
 
 def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -33,17 +31,9 @@ def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
     - pd.DataFrame: Dataframe contained transformed data.
     """
-
-    # df = pd.read_csv(path)
-    df["category"] = df["category"].apply(
-        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
-    )
-    df["score"] = df["score"].apply(
-        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
-    )
     df["topic"] = df.apply(topic_condition, axis=1)
-    df = df.drop(["category", "score"], axis=1)
-    df = df[df["phrase"].notna()]
+    df = df.drop(["phrases", "category", "score", "score_price"], axis=1)
+    df = df.dropna(subset="phrase")
     return df
 
 
@@ -57,7 +47,7 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
     - pd.DataFrame: DataFrame containing original data with added transformer sentiment labels.
     """
 
-    # Ensure the 'phrase' column exists
+    # ensure the 'phrase' column exists
     if "phrase" not in df.columns:
         raise ValueError("The CSV file must contain a 'phrase' column.")
 
