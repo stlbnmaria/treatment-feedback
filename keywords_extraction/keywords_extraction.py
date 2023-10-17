@@ -11,7 +11,7 @@ def extract_keywords(text):
     return r.get_ranked_phrases()
 
 
-def extract_keywords_from_comments(df: pd.DataFrame, config_data: Path("config.yaml")) -> pd.DataFrame:
+def extract_keywords_from_comments(df: pd.DataFrame, config_data: Path = Path("config.yaml")) -> pd.DataFrame:
     
     """
     Takes a dataframe as input, extracts the keywords from the commemts and save the output if specified.

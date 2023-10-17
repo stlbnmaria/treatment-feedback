@@ -57,10 +57,12 @@ def remove_disease_terms(row):
     - list: A list of words from 'processed_comment' that are not found in any of the lemmatized sets
     ('lemmatized_disease', 'lemmatized_treatment', 'lemmatized_antibody').
     """
+    words_to_remove=['year', 'month', 'week', 'day']
     return [
         word
         for word in row["processed_comment"]
-        if not any(
+        if word not in words_to_remove
+        and not any(
             word in lemmatized_set
             for lemmatized_set in [
                 row["lemmatized_disease"],
@@ -130,7 +132,6 @@ def extract_filter_process(
 
     # Remove treatment, disease and anti-body names from processed comment
     dataframe["processed_comment"] = dataframe.apply(remove_disease_terms, axis=1)
-
     return dataframe
 
 
