@@ -1,10 +1,23 @@
 import pandas as pd
 from transformers import pipeline
 
-def phrase_classification(df: pd.DataFrame):
+def phrase_classification(df: pd.DataFrame,
+                          column_name_phrase: str = "phrases"):
+    """classifies the extracted phrases into topics 
+
+    Args:
+        df (pd.DataFrame): the input dataframe
+        column_name_phrase (str): the row name of the dataframe
+        that contains the phrases that should be classified
+
+    Returns:
+        pd.DataFrame: the output dataframe in which each phrase
+        is represented by a row
+    """
 
     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 
+    # the categories for the classification
     category_labels = [
     "cost",
     "side effects",
@@ -16,7 +29,7 @@ def phrase_classification(df: pd.DataFrame):
 
     # Iterate through the original DataFrame
     for index, row in df.iterrows():
-        phrases = row["phrases"]
+        phrases = row["column_name_phrase"]
         
         # If there are phrases, classify and add new rows
         if phrases:
