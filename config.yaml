@@ -20,6 +20,6 @@ max_length: 10
 
 # list of broad topics that should be taken into account
 topics:
-  - "adverse effect"
+  - "effect"
   - "price"
-  - "effectiveness"
+  - "frequency"
