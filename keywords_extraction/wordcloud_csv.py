@@ -15,13 +15,14 @@ def wordcloud() -> None:
         None
     """
 
+    # Read the preprocessed data and extract keywords from it
     df = pd.read_csv("../data/preprocessed.csv")
     dataframe = extract_keywords_from_comments(df, Path("../config.yaml"))
 
+    # Transform each element of a list-like to a row, replicating index values
     dataframe = dataframe.loc[:, ['text_index', 'keywords_comment']]
     expanded_df = dataframe.explode('keywords_comment', ignore_index=True)
     expanded_df = expanded_df.rename(columns={'keywords_comment': 'word'})
-    print(expanded_df)
 
     # Set the output path of the csv
     output_path = Path("../data/wordcloud.csv")
