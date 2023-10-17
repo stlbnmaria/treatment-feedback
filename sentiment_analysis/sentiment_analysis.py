@@ -24,29 +24,6 @@ def topic_condition(row: pd.Series) -> str:
             return "no topic"
 
 
-def load_process_sent_data(path: str) -> pd.DataFrame:
-    """
-    Load and processes the data from Topic extraction.
-
-    Parameters:
-    - path(str): Path to the data which is loaded.
-    Returns:
-    - pd.DataFrame: Dataframe contained transformed data.
-    """
-
-    df = pd.read_csv(path)
-    df["category"] = df["category"].apply(
-        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
-    )
-    df["score"] = df["score"].apply(
-        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
-    )
-    df["topic"] = df.apply(topic_condition, axis=1)
-    df = df.drop(["category", "score"], axis=1)
-    df = df[df["phrase"].notna()]
-    return df
-
-
 def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Load and processes the data from Topic extraction.
@@ -112,32 +89,3 @@ def sent_analysis(df):
     df = sentiment_analysis_transformers(df)
     df.to_csv(output_path)
     print("------- Sentiment Analysis Completed -------")
-
-
-def main():
-    # Define the path to the preprocessed data
-    path = os.path.join(
-        os.getcwd(), "..", "data_preprocessing", "data", "csv_for_sentiment.csv"
-    )
-    output_path = os.path.join(
-        os.getcwd(),
-        "..",
-        "data_preprocessing",
-        "data",
-        "sent_analysis.csv",
-    )
-
-    # Preprocess data
-    df = load_process_sent_data(path)
-
-    #   Use pre-trained model to predict sentiment
-    df = sentiment_analysis_transformers(df)
-
-    # df_with_predictions.to_csv(output_path)
-    df.to_csv(output_path)
-
-    print("------- Sentiment Analysis Completed -------")
-
-
-# if __name__ == "__main__":
-#    main()
