@@ -10,6 +10,7 @@ from markers_extraction.rank_keywords_inside_topic import (
 from phrase_modeling.phrase_classification import phrase_classification
 from phrase_modeling.phrase_extraction import phrase_extraction
 from sentiment_analysis.sentiment_analysis import sent_analysis
+from markers_extraction.markers_in_comments import markers_in_comments
 
 
 @click.command()
@@ -44,6 +45,7 @@ def main(config_path: Path):
     df_phrase = sent_analysis(
         df_phrase, out_path=Path(config_path.parent / config["sent_phrase_path"])
     )
+    markers_in_comments(config_path)
 
 
 if __name__ == "__main__":
