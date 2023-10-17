@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from pathlib import Path
 import spacy
@@ -64,6 +65,7 @@ def rank_keywords_inside_topic(
 
         # Save similarity scores as the CSV file
         csv_file_name = f"scores_{disease}_{topic}.csv"
+        os.makedirs(Path(config_data.parent / similarity_scores_path), exist_ok=True)
         similarity_scores.to_csv(
             Path(config_data.parent / similarity_scores_path / csv_file_name),
             index=False,
