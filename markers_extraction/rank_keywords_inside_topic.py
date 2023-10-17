@@ -74,7 +74,7 @@ def rank_keywords_inside_topic(
 
 def create_keywords_ranking_for_topics(
     df: pd.DataFrame, config_data: Path = Path("config.yaml")
-):
+) -> None:
     """
     Get lists of key words for selected disease and selcted topics ordered by similarity score with topic.
 

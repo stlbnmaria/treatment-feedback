@@ -17,8 +17,7 @@ def extract_filter_process(
     treatments: list = [],
 ) -> pd.DataFrame:
     """
-    Preprocesses the CSV file specified by extracting treatment, disease, and antibody information
-    and tokenizing the comments.
+    Preprocesses the CSV file specified by extracting treatment, disease, and antibody information.
 
     Parameters:
     - file_path (Path): Path to the CSV file.
@@ -73,7 +72,7 @@ def preprocess_data(config_path: Path = Path("../config.yaml")):
 
     Returns:
     - pd.DataFrame: The processed dataframe with added 'treatment', 'disease', 'antibody',
-                    and 'processed_comment' columns.
+                    and 'treatment type' columns.
     """
 
     # read the path from the config.yaml file

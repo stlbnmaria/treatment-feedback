@@ -6,10 +6,20 @@ import pandas as pd
 from pathlib import Path
 from rake_nltk import Rake
 import string
+from typing import List
 import yaml
 
 
-def kewords_lemmatization(value):
+def kewords_lemmatization(value: str) -> str:
+    """
+    Lemmatizes keywords.
+
+    Parameters:
+    - value (str): The input text string to be lemmatized.
+
+    Returns:
+    - str: A string of the lemmatized comment.
+    """
     stop_words = set(stopwords.words("english"))
     lemmatizer = WordNetLemmatizer()
 
@@ -25,7 +35,7 @@ def kewords_lemmatization(value):
     )  # Join the lemmatized tokens into a single string
 
 
-def lemmatize_case(value):
+def lemmatize_case(value: str) -> List[str]:
     """
     Lemmatizes a given text string by tokenizing it, converting to lowercase,
     removing punctuation, and lemmatizing non-stopword, alphabetical tokens.
@@ -55,7 +65,7 @@ def lemmatize_case(value):
         return []
 
 
-def remove_disease_terms(row):
+def remove_disease_terms(row: pd.Series) -> List[str]:
     """
     Filter out words from a processed comment that appear in the names of the treatment,
     disease and anti-body for this disease.
@@ -84,7 +94,16 @@ def remove_disease_terms(row):
     ]
 
 
-def extract_keywords(text):
+def extract_keywords(text: str) -> List[str]:
+    """
+    Lemmatizes keywords.
+
+    Parameters:
+    - text (str): The input text string to extract keywords from.
+
+    Returns:
+    - List[str]: A list of extracted keywords for that string.
+    """
     r = Rake(max_length=2)
     r.extract_keywords_from_text(text)
     return r.get_ranked_phrases()
