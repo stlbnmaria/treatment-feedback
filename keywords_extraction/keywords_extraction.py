@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 from rake_nltk import Rake
 import yaml
+from data_preprocessing.data_preprocess import lemmatize_case
 
 
 def extract_keywords(text):
@@ -11,8 +12,9 @@ def extract_keywords(text):
     return r.get_ranked_phrases()
 
 
-def extract_keywords_from_comments(df: pd.DataFrame, config_data: Path = Path("config.yaml")) -> pd.DataFrame:
-    
+def extract_keywords_from_comments(
+    df: pd.DataFrame, config_data: Path("config.yaml")
+) -> pd.DataFrame:
     """
     Takes a dataframe as input, extracts the keywords from the commemts and save the output if specified.
 
@@ -27,13 +29,15 @@ def extract_keywords_from_comments(df: pd.DataFrame, config_data: Path = Path("c
     # Read the path from the config.yaml file
     with open(config_data) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
-    
+
     df["keywords_comment"] = df["comment"].apply(extract_keywords)
 
-    # Change column to list of strings instead of whole string
-    df["keywords_comment"] = df.processed_comment.apply(
-        lambda x: literal_eval(str(x))
+    df["keywords_comment"] = df["keywords_comment"].apply(
+        lambda keywords: [lemmatize_case(keyword) for keyword in keywords]
     )
+
+    # Change column to list of strings instead of whole string
+    df["keywords_comment"] = df.processed_comment.apply(lambda x: literal_eval(str(x)))
 
     print("-------- Key words extraction done -------")
 
@@ -43,5 +47,5 @@ def extract_keywords_from_comments(df: pd.DataFrame, config_data: Path = Path("c
     if output_path:
         # Save the data to csv if requested
         df.to_csv(Path(config_data.parent / output_path), index=False)
-    
+
     return df
