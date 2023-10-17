@@ -1,16 +1,23 @@
 import pandas as pd
+from pathlib import Path
 from transformers import pipeline
+from typing import List
 
 
 def phrase_classification(
-    df: pd.DataFrame, column_name_phrase: str = "phrases"
+    df: pd.DataFrame,
+    file_path: Path,
+    category_labels: List[str],
+    column_name_phrase: str = "phrases",
 ) -> pd.DataFrame:
     """classifies the extracted phrases into topics
 
     Args:
-        df (pd.DataFrame): the input dataframe
-        column_name_phrase (str): the row name of the dataframe
-        that contains the phrases that should be classified
+        - df (pd.DataFrame): the input dataframe
+        - file_path (Path): file for output csv
+        - category_labels (List[str]): list of topics in config.yaml
+        - column_name_phrase (str): the row name of the dataframe
+            that contains the phrases that should be classified
 
     Returns:
         pd.DataFrame: the output dataframe in which each phrase
@@ -18,13 +25,6 @@ def phrase_classification(
     """
 
     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-
-    # the categories for the classification
-    category_labels = [
-        "cost",
-        "side effects",
-        "improved",
-    ]
 
     # Create a list to store the new rows
     new_rows = []
@@ -54,7 +54,8 @@ def phrase_classification(
 
     # Creates a new DataFrame from the new rows
     row_df = pd.DataFrame(new_rows)
-    row_df.drop(columns="phrases")
-    row_df.to_csv("data_preprocessing/data/row_csv.csv", index=False)
+    row_df.drop(columns=column_name_phrase)
+    if file_path:
+        row_df.to_csv(file_path, index=False)
 
     return row_df
