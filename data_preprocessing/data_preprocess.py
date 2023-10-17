@@ -1,11 +1,6 @@
-from ast import literal_eval
 import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
 from pathlib import Path
 import pandas as pd
-import string
 import yaml
 
 
@@ -15,65 +10,6 @@ nltk.download("punkt")
 nltk.download("wordnet")
 
 
-def lemmatize_case(value):
-    """
-    Lemmatizes a given text string by tokenizing it, converting to lowercase,
-    removing punctuation, and lemmatizing non-stopword, alphabetical tokens.
-
-    Parameters:
-    - value (str): The input text string to be lemmatized.
-
-    Returns:
-    - list: A list of lemmatized tokens from the input text, excluding stop words and non-alphabetical tokens.
-          If the input value is None or NaN, an empty list is returned.
-    """
-
-    stop_words = set(stopwords.words("english"))
-    lemmatizer = WordNetLemmatizer()
-
-    if pd.notna(value):
-        return [
-            lemmatizer.lemmatize(token)
-            for token in word_tokenize(
-                value.lower()
-                .strip()
-                .translate(str.maketrans("", "", string.punctuation))
-            )
-            if token not in stop_words and token.isalpha()
-        ]
-    else:
-        return []
-
-
-def remove_disease_terms(row):
-    """
-    Filter out words from a processed comment that appear in the names of the treatment,
-    disease and anti-body for this disease.
-
-    Parameters:
-    - row (pandas.Series): A pandas Series containing columns.
-
-    Returns:
-    - list: A list of words from 'processed_comment' that are not found in any of the lemmatized sets
-    ('lemmatized_disease', 'lemmatized_treatment', 'lemmatized_antibody').
-    """
-    words_to_remove=['year', 'month', 'week', 'day']
-    return [
-        word
-        for word in row["processed_comment"]
-        if word not in words_to_remove
-        and not any(
-            word in lemmatized_set
-            for lemmatized_set in [
-                row["lemmatized_disease"],
-                row["lemmatized_treatment"],
-                row["lemmatized_antibody"],
-                "uc",
-            ]
-        )
-    ]
-
-
 def extract_filter_process(
     file_path: Path,
     diseases: list = [],
@@ -81,8 +17,7 @@ def extract_filter_process(
     treatments: list = [],
 ) -> pd.DataFrame:
     """
-    Preprocesses the CSV file specified by extracting treatment, disease, and antibody information
-    and tokenizing the comments.
+    Preprocesses the CSV file specified by extracting treatment, disease, and antibody information.
 
     Parameters:
     - file_path (Path): Path to the CSV file.
@@ -125,18 +60,10 @@ def extract_filter_process(
     if treatments:
         dataframe = dataframe[dataframe["treatment"].isin(treatments)]
 
-    # Convert to lowercase, tokenize, remove stopwords, and apply lemmatization
-    dataframe["processed_comment"] = dataframe["comment"].apply(lemmatize_case)
-    dataframe["lemmatized_disease"] = dataframe["disease"].apply(lemmatize_case)
-    dataframe["lemmatized_antibody"] = dataframe["antibody"].apply(lemmatize_case)
-    dataframe["lemmatized_treatment"] = dataframe["treatment"].apply(lemmatize_case)
-
-    # Remove treatment, disease and anti-body names from processed comment
-    dataframe["processed_comment"] = dataframe.apply(remove_disease_terms, axis=1)
     return dataframe
 
 
-def preprocess_data(config_data: Path = Path("config.yaml")):
+def preprocess_data(config_path: Path = Path("../config.yaml")):
     """
     Initiate preprocessing of data and save the output if specified.
 
@@ -145,15 +72,15 @@ def preprocess_data(config_data: Path = Path("config.yaml")):
 
     Returns:
     - pd.DataFrame: The processed dataframe with added 'treatment', 'disease', 'antibody',
-                    and 'processed_comment' columns.
+                    and 'treatment type' columns.
     """
 
     # read the path from the config.yaml file
-    with open(config_data) as f:
+    with open(config_path) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     df = extract_filter_process(
-        file_path=Path(config_data.parent / config["file_path"]),
+        file_path=Path(config_path.parent / config["file_path"]),
         diseases=config.get("diseases", []),
         antibodies=config.get("antibodies", []),
         treatments=config.get("treatments", []),
@@ -164,7 +91,7 @@ def preprocess_data(config_data: Path = Path("config.yaml")):
     output_path = config.get("preprocessing_path", None)
     if output_path:
         # save the data to csv if requested
-        df.to_csv(Path(config_data.parent / output_path), index=False)
+        df.to_csv(Path(config_path.parent / output_path), index=False)
 
     return df
 

@@ -1,8 +1,9 @@
 # relative paths from this config
 file_path: "data/raw_data_healthcare.csv"
 preprocessing_path: "data/preprocessed.csv"
+phrase_path: "data/phrase.csv"
+sent_phrase_path: "data/sent_analysis.csv"
 keywords_output_file_path: "data/data_with_keywords.csv"
-preprocessing_config_file: "data_preprocessing/config.yaml"
 similarity_scores_path: "data/topic_similarity_scores"
 
 # list of diseases that should be included, if empty all will be taken into account
@@ -16,8 +17,12 @@ treatments:
 # list of antibodies that should be included, if empty all will be taken into account
 antibodies:
 
+# phrase extraction parameters
+min_length: 3
+max_length: 12
+
 # list of broad topics that should be taken into account
 topics:
-  - "adverse effect"
+  - "effect"
   - "price"
-  - "effectiveness"
+  - "frequency"

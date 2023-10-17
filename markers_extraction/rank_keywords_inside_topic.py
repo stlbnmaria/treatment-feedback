@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from pathlib import Path
 import spacy
@@ -64,6 +65,7 @@ def rank_keywords_inside_topic(
 
         # Save similarity scores as the CSV file
         csv_file_name = f"scores_{disease}_{topic}.csv"
+        os.makedirs(Path(config_data.parent / similarity_scores_path), exist_ok=True)
         similarity_scores.to_csv(
             Path(config_data.parent / similarity_scores_path / csv_file_name),
             index=False,
@@ -71,32 +73,25 @@ def rank_keywords_inside_topic(
 
 
 def create_keywords_ranking_for_topics(
-    df: pd.DataFrame, config_data: Path = Path("config.yaml")
-):
+    df: pd.DataFrame, config_path: Path = Path("config.yaml")
+) -> None:
     """
     Get lists of key words for selected disease and selcted topics ordered by similarity score with topic.
 
     Parameters:
     - df (pandas.DataFrame): A DataFrame containing information about diseases, including a "disease" column and a "keywords_comment" column.
-    - topic (str): The specific topic for which you want to find related keywords.
-
-    The function performs the following steps:
-    1. Filters the data to select the disease.
-    2. Retrieves all unique keywords related to the selected disease.
-    3. Calculates the similarity score between each keyword and the given topic using spaCy word vectors.
-    4. Sorts the similarity scores in descending order.
-    5. Saves the sorted similarity scores to a CSV file named "{disease}_{topic}.csv".
+    - config_path (Path): path to config file.
 
     Returns:
-    - pandas.DataFrame: A DataFrame containing keywords with sorted similarity scores.
+    - None
     """
     # Read the path from the config.yaml file
-    with open(config_data) as f:
+    with open(config_path) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     topics = config.get("topics", [])
 
     for topic in topics:
-        rank_keywords_inside_topic(df, topic, config_data)
+        rank_keywords_inside_topic(df, topic, config_path)
 
     print("----------- Key words from all topics done ---------")
