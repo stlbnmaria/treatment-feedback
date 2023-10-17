@@ -23,7 +23,7 @@ def main(config_path: Path):
     # perform data preprocessing
     df = preprocess_data(config_path)
 
-    # extract keywords 
+    # extract keywords
     df_keywords = extract_keywords_from_comments(df, config_path)
     create_keywords_ranking_for_topics(df_keywords, config_path)
 
