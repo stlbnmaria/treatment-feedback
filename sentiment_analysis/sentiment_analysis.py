@@ -33,7 +33,7 @@ def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     df["topic"] = df.apply(topic_condition, axis=1)
     df = df.drop(["phrases", "category", "score", "score_price"], axis=1)
-    df = df.dropna(subset="phrase")
+    df = df.dropna(subset="topic")
     return df
 
 
