@@ -18,9 +18,6 @@ antibodies:
 
 # list of broad topics that should be taken into account
 topics:
-  - "symptoms, side effects"
+  - "adverse effect"
   - "price"
-  - "health improvements"
-
-
-# do dictionary 
+  - "effectiveness"

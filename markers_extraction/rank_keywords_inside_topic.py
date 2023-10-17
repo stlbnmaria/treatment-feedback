@@ -56,13 +56,15 @@ def rank_keywords_inside_topic(
         sorted_similarity_scores = sorted(
             similarity_scores.items(), key=lambda x: x[1], reverse=True
         )
-        df = pd.DataFrame(
+        similarity_scores = pd.DataFrame(
             sorted_similarity_scores, columns=["Keyword", "Similarity Score"]
         )
 
+        print(f"-- Key words for {topic} for {disease} --")
+
         # Save similarity scores as the CSV file
         csv_file_name = f"scores_{disease}_{topic}.csv"
-        df.to_csv(
+        similarity_scores.to_csv(
             Path(config_data.parent / similarity_scores_path / csv_file_name),
             index=False,
         )
@@ -97,4 +99,4 @@ def create_keywords_ranking_for_topics(
     for topic in topics:
         rank_keywords_inside_topic(df, topic, config_data)
 
-    print("-------- Key words from topics done -------")
+    print("----------- Key words from all topics done ---------")
