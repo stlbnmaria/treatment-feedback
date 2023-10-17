@@ -2,7 +2,9 @@ import pandas as pd
 from transformers import pipeline
 
 
-def phrase_classification(df: pd.DataFrame, column_name_phrase: str = "phrases"):
+def phrase_classification(
+    df: pd.DataFrame, column_name_phrase: str = "phrases"
+) -> pd.DataFrame:
     """classifies the extracted phrases into topics
 
     Args:
@@ -28,7 +30,7 @@ def phrase_classification(df: pd.DataFrame, column_name_phrase: str = "phrases")
     new_rows = []
 
     # Iterate through the original DataFrame
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         phrases = row[column_name_phrase]
 
         # If there are phrases, classify and add new rows
@@ -52,6 +54,6 @@ def phrase_classification(df: pd.DataFrame, column_name_phrase: str = "phrases")
 
     # Creates a new DataFrame from the new rows
     row_df = pd.DataFrame(new_rows)
-    row_df.to_csv("data_preprocessing/data/row_csv.csv")
+    row_df.to_csv("data_preprocessing/data/row_csv.csv", index=False)
 
     return row_df
