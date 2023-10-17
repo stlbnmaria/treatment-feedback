@@ -5,7 +5,7 @@ import yaml
 
 
 def rank_keywords_inside_topic(
-    df: pd.DataFrame, topic: str, file_path: Path
+    df: pd.DataFrame, topic: str, config_data
 ) -> pd.DataFrame:
     """
     Retrieve and calculate the similarity of important keywords related to a specific topic within a dataset of diseases.
@@ -24,7 +24,12 @@ def rank_keywords_inside_topic(
     Returns:
     - pandas.DataFrame: A DataFrame containing keywords with sorted similarity scores.
     """
+    with open(config_data) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+
     nlp = spacy.load("en_core_web_md")
+
+    similarity_scores_path = config.get("similarity_scores_path", "")
 
     for disease in df["disease"].unique():
         disease_data = df[df["disease"] == disease]
@@ -32,13 +37,16 @@ def rank_keywords_inside_topic(
         # Get all unique keywords for the disease
         disease_keywords = disease_data["keywords_comment"]
 
+        all_keywords = []
         for keyword in disease_keywords:
-            disease_keywords.add(keyword)
+            all_keywords.extend(keyword)
+
+        all_keywords = list(set(all_keywords))
 
         # Calculate similarity score between key words and topic
         similarity_scores = {}
 
-        for keyword in disease_keywords:
+        for keyword in all_keywords:
             keyword_vec = nlp(keyword)
             topic_vec = nlp(topic)
             similarity_score = keyword_vec.similarity(topic_vec)
@@ -54,7 +62,10 @@ def rank_keywords_inside_topic(
 
         # Save similarity scores as the CSV file
         csv_file_name = f"scores_{disease}_{topic}.csv"
-        df.to_csv(Path(file_path / csv_file_name), index=False)
+        df.to_csv(
+            Path(config_data.parent / similarity_scores_path / csv_file_name),
+            index=False,
+        )
 
 
 def create_keywords_ranking_for_topics(
@@ -82,9 +93,8 @@ def create_keywords_ranking_for_topics(
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     topics = config.get("topics", [])
-    similarity_scores_path = config.get("similarity_scores_path", "")
 
     for topic in topics:
-        rank_keywords_inside_topic(df, topic, similarity_scores_path)
+        rank_keywords_inside_topic(df, topic, config_data)
 
     print("-------- Key words from topics done -------")
