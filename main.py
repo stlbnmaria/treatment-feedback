@@ -3,6 +3,7 @@ from pathlib import Path
 
 from data_preprocessing.data_preprocess import preprocess_data
 from keyword_extraction import keyword_extraction
+from phrase_extraction import phrase_extraction
 
 
 @click.command()
@@ -15,6 +16,7 @@ from keyword_extraction import keyword_extraction
 def main(config_data: Path):
     df = preprocess_data(config_data)
     df = keyword_extraction(df)
+    df = phrase_extraction(df)
 
 if __name__ == "__main__":
     main()
