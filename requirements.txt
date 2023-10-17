@@ -3,9 +3,6 @@ ipykernel==6.25.2
 matplotlib==3.8.0
 nbstripout==0.6.1
 nltk==3.8.1
-<<<<<<< HEAD
 pandas==2.1.1
 PyYAML==6.0.1
-=======
 rake-nltk==1.0.6
->>>>>>> e18300d4b985584f75dce4648fdd7a77ea2b5601
