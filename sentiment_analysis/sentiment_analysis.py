@@ -46,6 +46,7 @@ def load_process_sent_data(path: str) -> pd.DataFrame:
     df = df[df["phrase"].notna()]
     return df
 
+
 def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Load and processes the data from Topic extraction.
@@ -56,7 +57,7 @@ def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
     - pd.DataFrame: Dataframe contained transformed data.
     """
 
-    #df = pd.read_csv(path)
+    # df = pd.read_csv(path)
     df["category"] = df["category"].apply(
         lambda x: ast.literal_eval(x) if pd.notnull(x) else []
     )
@@ -98,6 +99,7 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
     )
     return df
 
+
 def sent_analysis(df):
     output_path = os.path.join(
         os.getcwd(),
@@ -110,8 +112,6 @@ def sent_analysis(df):
     df = sentiment_analysis_transformers(df)
     df.to_csv(output_path)
     print("------- Sentiment Analysis Completed -------")
-
-
 
 
 def main():
@@ -139,5 +139,5 @@ def main():
     print("------- Sentiment Analysis Completed -------")
 
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    main()
