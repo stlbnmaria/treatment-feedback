@@ -84,10 +84,15 @@ def remove_disease_terms(row: pd.Series) -> List[str]:
         if all(
             word
             not in [
-                row["lemmatized_disease"],
-                row["lemmatized_treatment"],
-                row["lemmatized_antibody"],
+                " ".join(row["lemmatized_disease"]),
+                row["lemmatized_disease"][0],
+                "".join(row["lemmatized_treatment"]),
+                "".join(row["lemmatized_antibody"]),
                 "uc",
+                "year",
+                "month",
+                "week",
+                "day",
             ]
             for word in keyword.split()
         )
@@ -110,7 +115,7 @@ def extract_keywords(text: str) -> List[str]:
 
 
 def extract_keywords_from_comments(
-    df: pd.DataFrame, config_data: Path("config.yaml")
+    df: pd.DataFrame, config_data: Path = Path("config.yaml")
 ) -> pd.DataFrame:
     """
     Takes a dataframe as input, extracts the keywords from the commemts and save the output if specified.
