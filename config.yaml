@@ -2,6 +2,7 @@
 file_path: "data/raw_data_healthcare.csv"
 preprocessing_path: "data/preprocessed.csv"
 phrase_path: "data/phrase.csv"
+sent_phrase_path: "data/sent_analysis.csv"
 
 # list of diseases that should be included, if empty all will be taken into account
 diseases:
@@ -15,8 +16,8 @@ treatments:
 antibodies:
 
 # phrase extraction parameters
-min_length: 4
-max_length: 10
+min_length: 3
+max_length: 12
 
 # list of broad topics that should be taken into account
 topics:

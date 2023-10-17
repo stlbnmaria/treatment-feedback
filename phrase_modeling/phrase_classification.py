@@ -43,7 +43,7 @@ def phrase_classification(
                 new_row["phrase"] = phrase
                 new_row["category"] = categories
                 new_row["score"] = scores
-                new_row["score_price"] = scores[categories.index('price')]
+                new_row["score_price"] = scores[categories.index("price")]
                 new_rows.append(new_row)
         else:
             # If no phrases, add an empty row
@@ -58,5 +58,7 @@ def phrase_classification(
     row_df.drop(columns=column_name_phrase)
     if file_path:
         row_df.to_csv(file_path, index=False)
+
+    print("------- Phrase Modeling Completed -------")
 
     return row_df

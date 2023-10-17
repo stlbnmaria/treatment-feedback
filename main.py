@@ -5,6 +5,7 @@ import yaml
 from data_preprocessing.data_preprocess import preprocess_data
 from phrase_modeling.phrase_classification import phrase_classification
 from phrase_modeling.phrase_extraction import phrase_extraction
+from sentiment_analysis.sentiment_analysis import sent_analysis
 
 
 @click.command()
@@ -26,10 +27,14 @@ def main(config_path: Path):
         df, min_length=config["min_length"], max_length=config["max_length"]
     )
     # do phrase classification
-    df_phrase = phrase_classification(
+    df = phrase_classification(
         df,
         file_path=Path(config_path.parent / config["phrase_path"]),
         category_labels=config["topics"],
+    )
+    # do sentiment analysis on phrases
+    df = sent_analysis(
+        df, out_path=Path(config_path.parent / config["sent_phrase_path"])
     )
 
 
