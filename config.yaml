@@ -1,6 +1,7 @@
 # relative paths from this config
-file_path: "./data/raw_data_healthcare.csv"
-output_path: "./data/preprocessed.csv"
+file_path: "data/raw_data_healthcare.csv"
+preprocessing_path: "data/preprocessed.csv"
+phrase_path: "data/phrase.csv"
 
 # list of diseases that should be included, if empty all will be taken into account
 diseases:
@@ -12,3 +13,13 @@ treatments:
 
 # list of antibodies that should be included, if empty all will be taken into account
 antibodies:
+
+# phrase extraction parameters
+min_length: 4
+max_length: 10
+
+# list of broad topics that should be taken into account
+topics:
+  - "adverse effect"
+  - "price"
+  - "effectiveness"

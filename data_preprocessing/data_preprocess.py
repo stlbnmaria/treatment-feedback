@@ -89,7 +89,7 @@ def extract_filter_process(
     return dataframe
 
 
-def preprocess_data(config_data: Path = Path("config.yaml")):
+def preprocess_data(config_path: Path = Path("../config.yaml")):
     """
     Initiate preprocessing of data and save the output if specified.
 
@@ -102,11 +102,11 @@ def preprocess_data(config_data: Path = Path("config.yaml")):
     """
 
     # read the path from the config.yaml file
-    with open(config_data) as f:
+    with open(config_path) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     df = extract_filter_process(
-        file_path=Path(config_data.parent / config["file_path"]),
+        file_path=Path(config_path.parent / config["file_path"]),
         diseases=config.get("diseases", []),
         antibodies=config.get("antibodies", []),
         treatments=config.get("treatments", []),
@@ -114,10 +114,10 @@ def preprocess_data(config_data: Path = Path("config.yaml")):
     print("-------- Data processing done -------")
 
     # set the output path of the csv
-    output_path = config.get("output_path", None)
+    output_path = config.get("preprocessing_path", None)
     if output_path:
         # save the data to csv if requested
-        df.to_csv(Path(config_data.parent / output_path), index=False)
+        df.to_csv(Path(config_path.parent / output_path), index=False)
 
     return df
 
