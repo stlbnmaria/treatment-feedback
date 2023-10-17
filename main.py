@@ -5,6 +5,7 @@ import yaml
 from data_preprocessing.data_preprocess import preprocess_data
 from phrase_modeling.phrase_classification import phrase_classification
 from phrase_modeling.phrase_extraction import phrase_extraction
+from sentiment_analysis.sentiment_analysis import sent_analysis
 
 
 @click.command()
@@ -31,6 +32,7 @@ def main(config_path: Path):
         file_path=Path(config_path.parent / config["phrase_path"]),
         category_labels=config["topics"],
     )
+    sent_analysis(df_phrase)
 
 
 if __name__ == "__main__":

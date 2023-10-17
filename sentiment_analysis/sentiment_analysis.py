@@ -2,12 +2,26 @@ import ast
 import numpy as np
 import os
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
 from transformers import pipeline
-from typing import List, Tuple, Union
+
+
+def topic_condition(row: pd.Series) -> str:
+    """
+
+    Selects which topic to be the topic of the phrase.
+
+    Parameters:
+    - row(pd.Series): Row of the dataframe for which we are defining the topics.
+    Returns:
+    - str: string of the topic selected.
+    """
+    if len(row["category"]) > 0 and len(row["score"]) > 0:
+        if row["score_price"] > 0.2:
+            return "price"
+        if row["score"][0] > 0.4:
+            return row["category"][0]
+        else:
+            return "no topic"
 
 
 def load_process_sent_data(path: str) -> pd.DataFrame:
@@ -24,10 +38,34 @@ def load_process_sent_data(path: str) -> pd.DataFrame:
     df["category"] = df["category"].apply(
         lambda x: ast.literal_eval(x) if pd.notnull(x) else []
     )
-    df["topic"] = df["category"].apply(lambda x: x[0] if len(x) > 0 else "")
+    df["score"] = df["score"].apply(
+        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
+    )
+    df["topic"] = df.apply(topic_condition, axis=1)
     df = df.drop(["category", "score"], axis=1)
     df = df[df["phrase"].notna()]
-    # df["phrase"] = df["phrase"].apply(lambda x : str(x))
+    return df
+
+def process_sent_data(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Load and processes the data from Topic extraction.
+
+    Parameters:
+    - path(str): Path to the data which is loaded.
+    Returns:
+    - pd.DataFrame: Dataframe contained transformed data.
+    """
+
+    #df = pd.read_csv(path)
+    df["category"] = df["category"].apply(
+        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
+    )
+    df["score"] = df["score"].apply(
+        lambda x: ast.literal_eval(x) if pd.notnull(x) else []
+    )
+    df["topic"] = df.apply(topic_condition, axis=1)
+    df = df.drop(["category", "score"], axis=1)
+    df = df[df["phrase"].notna()]
     return df
 
 
@@ -38,10 +76,10 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
     Parameters:
     - df(pd.Dataframe): Dataframe upon wihch sentiment analysis will be conducted.
     Returns:
-    - pd.DataFrame: DataFrame containing original data with added transformer sentiment labels and scores.
+    - pd.DataFrame: DataFrame containing original data with added transformer sentiment labels.
     """
 
-    # Ensure the 'comment' column exists
+    # Ensure the 'phrase' column exists
     if "phrase" not in df.columns:
         raise ValueError("The CSV file must contain a 'phrase' column.")
 
@@ -59,6 +97,21 @@ def sentiment_analysis_transformers(df: pd.DataFrame) -> pd.DataFrame:
         df["transformer_sentiment_labels"] == "NEGATIVE", 0, 1
     )
     return df
+
+def sent_analysis(df):
+    output_path = os.path.join(
+        os.getcwd(),
+        "..",
+        "data_preprocessing",
+        "data",
+        "sent_analysis.csv",
+    )
+    df = process_sent_data(df)
+    df = sentiment_analysis_transformers(df)
+    df.to_csv(output_path)
+    print("------- Sentiment Analysis Completed -------")
+
+
 
 
 def main():
@@ -86,5 +139,5 @@ def main():
     print("------- Sentiment Analysis Completed -------")
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
