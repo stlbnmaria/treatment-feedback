@@ -1,5 +1,6 @@
 asttokens==2.4.0
 click==8.1.7
+fuzzywuzzy==0.18.0
 ipykernel==6.25.2
 matplotlib==3.8.0
 nbstripout==0.6.1
