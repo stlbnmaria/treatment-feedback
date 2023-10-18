@@ -35,5 +35,6 @@ def wordcloud(config_path: Path = Path("config.yaml")) -> None:
     # Save the data to csv
     expanded_df.to_csv(output_path, index=False)
 
+
 if __name__ == "__main__":
     wordcloud()
