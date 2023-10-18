@@ -1,0 +1,80 @@
+# relative paths from this config
+file_path: "data/raw_data_healthcare.csv"
+preprocessing_path: "data/preprocessed.csv"
+wordcloud_path: "data/wordcloud.csv"
+phrase_path: "data/phrase.csv"
+sent_phrase_path: "data/sent_analysis.csv"
+keywords_output_file_path: "data/data_with_keywords.csv"
+similarity_scores_path: "data/topic_similarity_scores"
+
+# list of diseases that should be included, if empty all will be taken into account
+diseases:
+  - "Crohn's Disease"
+  - "Ulcerative Colitis"
+
+# list of treatments that should be included, if empty all will be taken into account
+treatments: 
+
+# list of antibodies that should be included, if empty all will be taken into account
+antibodies:
+
+# phrase extraction parameters
+min_length: 3
+max_length: 12
+
+# list of broad topics that should be taken into account
+topics:
+  - "effect"
+  - "price"
+  - "frequency"
+
+chron_markers:
+  price:
+    cheap: ["save money", "insurance company", "insurance forced", "cheaper"]
+    expensive: ["expensive", "cost"]
+  frequency: 
+    available: ["available"]
+    procedure: ["procedure", "process"] 
+    emergency: ["emergency", "urgent"] 
+    convenient: ["convenient"] 
+    immediately: ["immediately"] 
+    frequency: ["frequency"] 
+    sometimes: ["sometimes"] 
+    normalcy: ["normalcy", "feeling normal", "normal"] 
+  effect:
+    bleeding: ["bloddy", "bloody nose", "bloody stools", "severe bleeding", "internal bleeding"]
+    digestive problems: ["stomach pain", "bowel struggles", "bowel", "digestive system", "bowel movement", "constipated", "bloating", "vomiting", "congestion", "much gas", "abdominal cramping", "abdominal pain", "cramping pain", "cramping"]
+    tiredness: ["fatigue", "extreme fatigue", "severe fatigue", "tiredness", "exhaustion", "zero energy", "always fatigued", "weakness"]
+    headache: ["severe headache", "headache", "constant headache", "nausea though", "migraine", "lightheaded often", "head kills"]
+    swelling: ["facial swelling", "swelling", "orofacial granulomatosis", "swelling quickly", "feet swelled"]
+    body pain: ["body pain", "body ache", "poor body", "slight soreness", "stiffness", "soreness"]
+    inflammation: ["inflammation marker", "inflammation", "inflamation"]
+    remission: ["total remission", "full remission", "abated", "remission"]
+    improvement: ["vast improvement", "significant improvement", "symptom minimal", "symptom improving", "pain relief", "seen relief", "relief", "productive", "much energy", "regained strength"]
+    effective: ["fantastic result", "good result", "rewarding experience", "effectiveness", "effective", "super effective", "finally work", "medicine work"]
+
+
+uc_markers:
+  price:
+    cheap: ["cheap", "cheaper drug", "insurance cover"]
+    expensive: ["expensive", "insurance issue", "financial situation", "afford", "cost"]
+  frequency: 
+    available: ["available"]
+    procedure: ["procedure", "process"] 
+    emergency: ["emergency", "urgent"] 
+    convenient: ["convenient"] 
+    immediately: ["immediately"] 
+    frequency: ["frequency"] 
+    sometimes: ["sometimes"] 
+    normalcy: ["normalcy", "feeling normal", "normal"] 
+  effect:
+    bloating: ["cramping", "constipation", "bloating", "bowel infection", "bloated stomach", "vomiting", "pancolitis", "colitis", "ulcerative colitis", "bowel infection", "constant diarrhea", "diarrhea"]
+    weight loss: ["weight loss", "underweight", "gained weight", "malnutrition", "severely anemic"]
+    muscle pain: ["muscle ache", "muscle pain", "muscle weakness", "weakness", "muscle fasciculation"]
+    fatigue: ["extreme fatigue", "chronic fatigue", "serious fatigue", "exhaustion"]
+    inflammation: ["inflamed", "surprising flare", "massive flare", "active inflammation", "swelling", "severe flare"]
+    headache: ["terrible headache", "lightheaded", "almost fainting", "drowsiness", "migraine"]
+    depression: ["depressed", "depression"]
+    drug works: ["medication work", "drug work", "work better", "work regularly", "medication work", "life changing", "better life", "success", "shown success"]
+    improvement: ["symptom improved", "relief", "much improved", "partial reduction", "improve", "symptom improving", "definitely better", "actually better", "feeling better", "immediate result", "profound reduction", "partial reduction", "improvement", "significant improvement", "positive effect"]
+    remission: ["almost eliminated", "curative result", "remission", "totally healthy", "symptom resolve", "complete remission", "full remission", "remission within"]
